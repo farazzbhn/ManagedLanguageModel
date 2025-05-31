@@ -1,4 +1,4 @@
-name: Publish to NuGet
+name: Public NuGet Publish
 
 on:
   push:
@@ -12,6 +12,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write  # Needed for GitHub Packages
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,8 +23,6 @@ jobs:
         with:
           dotnet-version: '8.0.x'
           source-url: https://api.nuget.org/v3/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_PUBLISH_KEY }}
           
       - name: Restore dependencies
         run: dotnet restore ManagedLib.LanguageModel.csproj
@@ -34,5 +33,5 @@ jobs:
       - name: Pack
         run: dotnet pack ManagedLib.LanguageModel.csproj --configuration Release --no-build --output nupkgs
         
-      - name: Publish to NuGet.org
+      - name: Publish to GitHub Packages
         run: dotnet nuget push "nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_PUBLISH_KEY }} --source https://api.nuget.org/v3/index.json 
