@@ -8,7 +8,7 @@
 /// This interface allows for such custom parsing logic to be implemented.
 /// </summary>
 /// <typeparam name="T">The type into which the LLM response will be parsed.</typeparam>
-public interface ILanguageModelResponseParser<T>
+public interface ILlmResponseHelper<T>
 {
     /// <summary>
     /// Attempts to parse the given input string into the specified type.

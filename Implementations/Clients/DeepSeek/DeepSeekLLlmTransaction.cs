@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using ManagedLib.LanguageModel.Abstractions;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI;
-internal class OpenAILanguageModelTransaction : LanguageModelTransaction
+namespace ManagedLib.LanguageModel.Implementations.Clients.DeepSeek;
+internal class DeepSeekLLlmTransaction : LlmTransaction
 {
     public override string ExtractReply()
     {

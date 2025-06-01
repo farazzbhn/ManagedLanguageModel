@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using ManagedLib.LanguageModel.Abstractions;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.Groq;
-internal class GroqLanguageModelTransaction : LanguageModelTransaction
+namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI;
+internal class OpenAILlmTransaction : LlmTransaction
 {
     public override string ExtractReply()
     {

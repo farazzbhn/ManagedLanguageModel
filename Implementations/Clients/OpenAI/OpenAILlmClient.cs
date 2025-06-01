@@ -1,34 +1,34 @@
 ﻿using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using ManagedLib.LanguageModel.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.DeepSeek;
-public class DeepSeekLanguageModelClient : ILanguageModelClient
+namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI;
+public class OpenAILlmClient : ILlmClient
 {
-    private readonly DeepSeekOptions _options;
-    public DeepSeekLanguageModelClient(IOptions<DeepSeekOptions> options)
+    private readonly OpenAIOptions _options;
+
+    private OpenAILlmClient(IOptions<OpenAIOptions> options)
     {
         _options = options.Value;
     }
 
 
-    public async Task<LanguageModelTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
+    public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
     {
         using var httpClient = new HttpClient();
 
 
         // add the system prompt to the very beginning of the messages
-        var messages = new List<DeepSeekPayload.Message>()
+        var messages = new List<OpenAIPayload.Message>()
         {
-            new DeepSeekPayload.Message() { role = "system", content = systemPrompt }
+            new () { role = "system", content = systemPrompt }
         };
 
 
         foreach (Message message in history)
         {
-            var msg = new DeepSeekPayload.Message()
+            var msg = new OpenAIPayload.Message()
             {
                 role = message.From switch
                 {
@@ -44,7 +44,7 @@ public class DeepSeekLanguageModelClient : ILanguageModelClient
 
 
         // invoke the endpoint
-        var payload = new DeepSeekPayload()
+        var payload = new OpenAIPayload()
         {
             Model = _options.Model,
             Messages = messages,
@@ -77,7 +77,7 @@ public class DeepSeekLanguageModelClient : ILanguageModelClient
         string response = await httpResponse.Content.ReadAsStringAsync();
 
 
-        return new DeepSeekLanguageModelTransaction()
+        return new OpenAILlmTransaction()
         {
             Request = jsonPayload,
             Response = response

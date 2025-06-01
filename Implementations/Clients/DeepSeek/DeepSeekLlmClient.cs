@@ -1,33 +1,34 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using ManagedLib.LanguageModel.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.Groq;
-public class GroqLanguageModelClient : ILanguageModelClient
+namespace ManagedLib.LanguageModel.Implementations.Clients.DeepSeek;
+public class DeepSeekLlmClient : ILlmClient
 {
-    private readonly GroqOptions _options;
-    public GroqLanguageModelClient(IOptions<GroqOptions> options)
+    private readonly DeepSeekOptions _options;
+    public DeepSeekLlmClient(IOptions<DeepSeekOptions> options)
     {
         _options = options.Value;
     }
 
 
-    public async Task<LanguageModelTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
+    public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
     {
         using var httpClient = new HttpClient();
 
 
         // add the system prompt to the very beginning of the messages
-        var messages = new List<GroqPayload.Message>()
+        var messages = new List<DeepSeekPayload.Message>()
         {
-            new () { role = "system", content = systemPrompt }
+            new DeepSeekPayload.Message() { role = "system", content = systemPrompt }
         };
 
 
         foreach (Message message in history)
         {
-            var msg = new GroqPayload.Message()
+            var msg = new DeepSeekPayload.Message()
             {
                 role = message.From switch
                 {
@@ -43,7 +44,7 @@ public class GroqLanguageModelClient : ILanguageModelClient
 
 
         // invoke the endpoint
-        var payload = new GroqPayload()
+        var payload = new DeepSeekPayload()
         {
             Model = _options.Model,
             Messages = messages,
@@ -76,7 +77,7 @@ public class GroqLanguageModelClient : ILanguageModelClient
         string response = await httpResponse.Content.ReadAsStringAsync();
 
 
-        return new GroqLanguageModelTransaction()
+        return new DeepSeekLLlmTransaction()
         {
             Request = jsonPayload,
             Response = response

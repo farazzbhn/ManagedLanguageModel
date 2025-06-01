@@ -3,7 +3,7 @@
 /// Defines the contract for interacting with a language model (LLM).
 /// </summary>
 /// 
-public interface ILanguageModelClient
+public interface ILlmClient
 {
     /// <summary>
     /// Invokes the language model with a given prompt and message history, and returns the transaction result.
@@ -15,10 +15,10 @@ public interface ILanguageModelClient
     /// Throw an exception in case of a network or authorization error
     /// </exception>
     /// <returns>
-    /// A task representing the asynchronous operation. The task result is a <see cref="LanguageModelTransaction"/> 
+    /// A task representing the asynchronous operation. The task result is a <see cref="LlmTransaction"/> 
     /// containing the request sent, the response received, and any relevant extracted data.
     /// </returns>
-    Task<LanguageModelTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history);
+    Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history);
 }
 
 public class Message

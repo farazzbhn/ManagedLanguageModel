@@ -3,24 +3,23 @@ using System.Text.Json;
 using ManagedLib.LanguageModel.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI;
-public class OpenAILanguageModelClient : ILanguageModelClient
+namespace ManagedLib.LanguageModel.Implementations.Clients.Groq;
+public class GroqLlmClient : ILlmClient
 {
-    private readonly OpenAIOptions _options;
-
-    private OpenAILanguageModelClient(IOptions<OpenAIOptions> options)
+    private readonly GroqOptions _options;
+    public GroqLlmClient(IOptions<GroqOptions> options)
     {
         _options = options.Value;
     }
 
 
-    public async Task<LanguageModelTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
+    public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
     {
         using var httpClient = new HttpClient();
 
 
         // add the system prompt to the very beginning of the messages
-        var messages = new List<OpenAIPayload.Message>()
+        var messages = new List<GroqPayload.Message>()
         {
             new () { role = "system", content = systemPrompt }
         };
@@ -28,7 +27,7 @@ public class OpenAILanguageModelClient : ILanguageModelClient
 
         foreach (Message message in history)
         {
-            var msg = new OpenAIPayload.Message()
+            var msg = new GroqPayload.Message()
             {
                 role = message.From switch
                 {
@@ -44,7 +43,7 @@ public class OpenAILanguageModelClient : ILanguageModelClient
 
 
         // invoke the endpoint
-        var payload = new OpenAIPayload()
+        var payload = new GroqPayload()
         {
             Model = _options.Model,
             Messages = messages,
@@ -77,7 +76,7 @@ public class OpenAILanguageModelClient : ILanguageModelClient
         string response = await httpResponse.Content.ReadAsStringAsync();
 
 
-        return new OpenAILanguageModelTransaction()
+        return new GroqLlmTransaction()
         {
             Request = jsonPayload,
             Response = response

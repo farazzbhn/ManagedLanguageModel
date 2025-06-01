@@ -1,6 +1,6 @@
 ﻿namespace ManagedLib.LanguageModel.Abstractions;
 
-public abstract class LanguageModelTransaction
+public abstract class LlmTransaction
 {
     /// <summary>
     /// The request sent to the language model (LLM).

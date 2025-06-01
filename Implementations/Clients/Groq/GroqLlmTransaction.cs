@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using ManagedLib.LanguageModel.Abstractions;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.DeepSeek;
-internal class DeepSeekLanguageModelTransaction : LanguageModelTransaction
+namespace ManagedLib.LanguageModel.Implementations.Clients.Groq;
+internal class GroqLlmTransaction : LlmTransaction
 {
     public override string ExtractReply()
     {

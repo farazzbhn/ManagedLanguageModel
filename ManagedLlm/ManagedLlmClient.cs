@@ -1,41 +1,41 @@
 ﻿using ManagedLib.LanguageModel.Abstractions;
 using ManagedLib.LanguageModel.Exceptions;
 
-namespace ManagedLib.LanguageModel.Helpers;
+namespace ManagedLib.LanguageModel.ManagedLlm;
 
-public class LanguageModelHelper
+public class ManagedLlmClient
 {
-    private readonly ILanguageModelClient _client;
+    private readonly ILlmClient _client;
 
-    public LanguageModelHelper(ILanguageModelClient client)
+    public ManagedLlmClient(ILlmClient client)
     {
         _client = client;
     }
 
-    public async Task<LanguageModelResponse<TDestination>> TryChatAsync<TDestination>(
+    public async Task<ManagedLlmResponse<TDestination>> TryChatAsync<TDestination>(
         string systemPrompt,
         IEnumerable<Message> history,
-        ILanguageModelResponseParser<TDestination> parser,
+        ILlmResponseHelper<TDestination> parser,
         int retries = 2
     ) where TDestination : class
     {
         ArgumentOutOfRangeException.ThrowIfNegative(retries, nameof(retries));
 
-        List<LanguageModelTransaction> transactions = new();
+        List<LlmTransaction> transactions = new();
         Exception innerException = new Exception("Inner exception not specified");
 
         for (int attempt = 1; attempt <= retries + 1; attempt++)
         {
             try
             {
-                LanguageModelTransaction result = await _client.InvokeAsync(systemPrompt, history);
+                LlmTransaction result = await _client.InvokeAsync(systemPrompt, history);
                 transactions.Add(result);
 
                 string answer = result.ExtractReply();
 
                 if (parser.TryParse(answer, out TDestination parsed))
                 {
-                    return new LanguageModelResponse<TDestination>()
+                    return new ManagedLlmResponse<TDestination>()
                     {
                         Parsed = parsed,
                         Transactions = transactions
@@ -48,7 +48,7 @@ public class LanguageModelHelper
 
                 if (attempt == retries)
                 {
-                    return new LanguageModelResponse<TDestination>()
+                    return new ManagedLlmResponse<TDestination>()
                     {
                         Parsed = null,
                         Exception = new MaxRetriesExceededException($"maximum number of retries exceeded for {_client.GetType().FullName}", innerException),
@@ -58,7 +58,7 @@ public class LanguageModelHelper
             }
         }
 
-        return new LanguageModelResponse<TDestination>()
+        return new ManagedLlmResponse<TDestination>()
         {
             Parsed = null,
             Exception = new MaxRetriesExceededException($"maximum number of retries exceeded for {_client.GetType().FullName}", innerException),

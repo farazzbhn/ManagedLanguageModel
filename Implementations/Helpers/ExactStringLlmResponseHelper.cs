@@ -1,8 +1,8 @@
 ﻿using ManagedLib.LanguageModel.Abstractions;
 
-namespace ManagedLib.LanguageModel.Implementations.ResponseParsers;
+namespace ManagedLib.LanguageModel.Implementations.Helpers;
 
-internal class ExactStringLanguageModelResponseParser : ILanguageModelResponseParser<string>
+public class ExactStringLlmResponseHelper : ILlmResponseHelper<string>
 {
     /// <summary>
     /// Attempts to parse the provided string by trimming any leading or trailing whitespace.
@@ -14,15 +14,13 @@ internal class ExactStringLanguageModelResponseParser : ILanguageModelResponsePa
     /// </returns>
     public bool TryParse(string input, out string parsed)
     {
-        try
-        {
-            parsed = input.Trim();  // Trim leading and trailing whitespaces from the input string
-            return true;
-        }
-        catch (Exception)
+        if (input is null)
         {
             parsed = null;
             return false;
         }
+
+        parsed = input.Trim();
+        return true;
     }
 }
