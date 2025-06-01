@@ -15,6 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{709F293F-4DAE-4840-B17C-3AB3BC5DB6EE}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\private-nuget.yml = .github\workflows\private-nuget.yml
+		.github\workflows\private-nuget.yml.disabled = .github\workflows\private-nuget.yml.disabled
 		.github\workflows\public-nuget.yml = .github\workflows\public-nuget.yml
 	EndProjectSection
 EndProject
