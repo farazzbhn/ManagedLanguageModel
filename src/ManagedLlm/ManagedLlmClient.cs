@@ -17,12 +17,17 @@ public class ManagedLlmClient
         IEnumerable<Message> history,
         ILlmResponseHelper<TDestination> parser,
         int retries = 2
-    ) where TDestination : class
+    )
     {
         ArgumentOutOfRangeException.ThrowIfNegative(retries, nameof(retries));
 
         List<LlmTransaction> transactions = new();
         Exception innerException = new Exception("Inner exception not specified");
+        var response = new ManagedLlmResponse<TDestination>() 
+        { 
+            Transactions = transactions,
+            Parsed = default
+        };
 
         for (int attempt = 1; attempt <= retries + 1; attempt++)
         {
@@ -35,11 +40,8 @@ public class ManagedLlmClient
 
                 if (parser.TryParse(answer, out TDestination parsed))
                 {
-                    return new ManagedLlmResponse<TDestination>()
-                    {
-                        Parsed = parsed,
-                        Transactions = transactions
-                    };
+                    response.Parsed = parsed;
+                    return response;
                 }
             }
             catch (Exception ex)
@@ -48,21 +50,15 @@ public class ManagedLlmClient
 
                 if (attempt == retries)
                 {
-                    return new ManagedLlmResponse<TDestination>()
-                    {
-                        Parsed = null,
-                        Exception = new MaxRetriesExceededException($"maximum number of retries exceeded for {_client.GetType().FullName}", innerException),
-                        Transactions = transactions
-                    };
+                    response.Exception = new MaxRetriesExceededException(
+                        $"maximum number of retries exceeded for {_client.GetType().FullName}", 
+                        innerException
+                    );
+                    return response;
                 }
             }
         }
 
-        return new ManagedLlmResponse<TDestination>()
-        {
-            Parsed = null,
-            Exception = new MaxRetriesExceededException($"maximum number of retries exceeded for {_client.GetType().FullName}", innerException),
-            Transactions = transactions
-        };
+        return response;
     }
 }

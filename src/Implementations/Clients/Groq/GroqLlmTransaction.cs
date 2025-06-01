@@ -6,10 +6,10 @@ internal class GroqLlmTransaction : LlmTransaction
 {
     public override string ExtractReply()
     {
-        dynamic? responseObject = JsonSerializer.Deserialize<dynamic>(Response);
+        var responseObject = JsonSerializer.Deserialize<GroqResponse>(Response);
 
         // Extracting the llm response 
-        string answer = responseObject?.choices?[0]?.message?.content?.ToString()!;
+        string answer = responseObject.Choices[0].ChoiceMessage.Content;
 
         return answer;
     }

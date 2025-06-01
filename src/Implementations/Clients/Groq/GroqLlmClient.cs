@@ -1,60 +1,66 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using ManagedLib.LanguageModel.Abstractions;
 using Microsoft.Extensions.Options;
 
-namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI;
-public class OpenAILlmClient : ILlmClient
+namespace ManagedLib.LanguageModel.Implementations.Clients.Groq;
+public class GroqLlmClient : ILlmClient
 {
-    private readonly OpenAIOptions _options;
-
-    private OpenAILlmClient(IOptions<OpenAIOptions> options)
+    private readonly GroqOptions _options;
+    public GroqLlmClient(IOptions<GroqOptions> options)
     {
         _options = options.Value;
     }
-
 
     public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
     {
         using var httpClient = new HttpClient();
 
-
         // add the system prompt to the very beginning of the messages
-        var messages = new List<OpenAIPayload.Message>()
+        var messages = new List<GroqPayload.Message>()
         {
-            new () { role = "system", content = systemPrompt }
+            new () { Role = "system", Content = systemPrompt }
         };
-
 
         foreach (Message message in history)
         {
-            var msg = new OpenAIPayload.Message()
+            var msg = new GroqPayload.Message()
             {
-                role = message.From switch
+                Role = message.From switch
                 {
                     Role.User => "user",
                     Role.System => "system",
                     Role.Assistant => "assistant",
                     _ => throw new ArgumentException($"Invalid Role: {message.From}")
                 },
-                content = message.Content
+                Content = message.Content
             };
             messages.Add(msg);
         }
 
-
         // invoke the endpoint
-        var payload = new OpenAIPayload()
+        var payload = new GroqPayload()
         {
             Model = _options.Model,
             Messages = messages,
-            Parameters = _options.Parameters?.ToDictionary(
-                kvp => kvp.Key,
-                kvp => (object)kvp.Value
-            ) ?? new()
+            Temperature = _options.Temperature,
+            MaxCompletionTokens = _options.MaxCompletionTokens,
+            TopP = _options.TopP,
+            Stream = _options.Stream,
+            FrequencyPenalty = _options.FrequencyPenalty,
+            PresencePenalty = _options.PresencePenalty,
+            Stop = _options.Stop,
+            User = _options.User,
+            Seed = _options.Seed,
+            N = _options.N,
+            ServiceTier = _options.ServiceTier
         };
 
-        string jsonPayload = JsonSerializer.Serialize(payload);
+        string jsonPayload = JsonSerializer.Serialize(payload, new JsonSerializerOptions 
+        { 
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull 
+        });
         StringContent httpContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
         // Create the HTTP request
@@ -64,28 +70,27 @@ public class OpenAILlmClient : ILlmClient
             {
                 { "Authorization", $"Bearer {_options.ApiKey}" }
             },
-
             Content = httpContent
         };
 
-
         // Send the request and get the response
         HttpResponseMessage httpResponse = await httpClient.SendAsync(httpRequest);
-        httpResponse.EnsureSuccessStatusCode();
+        
+        if (!httpResponse.IsSuccessStatusCode)
+        {
+            var errorContent = await httpResponse.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Groq API request failed with status {httpResponse.StatusCode}: {errorContent}");
+        }
 
         // retrieve the content deserialize the content
         string response = await httpResponse.Content.ReadAsStringAsync();
 
-
-        return new OpenAILlmTransaction()
+        return new GroqLlmTransaction()
         {
             Request = jsonPayload,
             Response = response
         };
-
     }
-
-
 }
 
 

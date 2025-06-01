@@ -3,13 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagedLib.LanguageModel", "ManagedLib.LanguageModel.csproj", "{9DDA0CCB-23F7-4F44-BF1F-81C130FF7C63}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E7BEEC75-F8CE-49A9-9322-5707C914149B}"
-	ProjectSection(SolutionItems) = preProject
-		README.MD = README.MD
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{709F293F-4DAE-4840-B17C-3AB3BC5DB6EE}"
@@ -17,22 +10,36 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\public-nuget.yml = .github\workflows\public-nuget.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2432E417-0A3F-4BB2-BCE3-B25AC44B2D83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedLib.LanguageModel", "src\ManagedLib.LanguageModel.csproj", "{32D55931-2E97-6E0A-A990-020DFE469950}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F6DA7547-0802-42D9-9C1B-2FA4AF1885AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedLib.LanguageModel.Example", "..\ManagedLib.LanguageModel.Example\ManagedLib.LanguageModel.Example.csproj", "{391EFF7C-ACD5-482B-8A88-4EF77AAECCC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9DDA0CCB-23F7-4F44-BF1F-81C130FF7C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DDA0CCB-23F7-4F44-BF1F-81C130FF7C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DDA0CCB-23F7-4F44-BF1F-81C130FF7C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DDA0CCB-23F7-4F44-BF1F-81C130FF7C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32D55931-2E97-6E0A-A990-020DFE469950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32D55931-2E97-6E0A-A990-020DFE469950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32D55931-2E97-6E0A-A990-020DFE469950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32D55931-2E97-6E0A-A990-020DFE469950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{391EFF7C-ACD5-482B-8A88-4EF77AAECCC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391EFF7C-ACD5-482B-8A88-4EF77AAECCC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391EFF7C-ACD5-482B-8A88-4EF77AAECCC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391EFF7C-ACD5-482B-8A88-4EF77AAECCC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{709F293F-4DAE-4840-B17C-3AB3BC5DB6EE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{32D55931-2E97-6E0A-A990-020DFE469950} = {2432E417-0A3F-4BB2-BCE3-B25AC44B2D83}
+		{391EFF7C-ACD5-482B-8A88-4EF77AAECCC9} = {F6DA7547-0802-42D9-9C1B-2FA4AF1885AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E2F6527-1A2C-4EF3-A47C-F2C30C566BA7}
