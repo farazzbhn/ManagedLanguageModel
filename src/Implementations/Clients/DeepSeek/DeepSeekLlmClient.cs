@@ -2,15 +2,16 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ManagedLib.LanguageModel.Abstractions;
+using ManagedLib.LanguageModel.Utilities;
 using Microsoft.Extensions.Options;
 
 namespace ManagedLib.LanguageModel.Implementations.Clients.DeepSeek;
 public class DeepSeekLlmClient : ILlmClient
 {
     private readonly DeepSeekOptions _options;
-    public DeepSeekLlmClient(IOptions<DeepSeekOptions> options)
+    public DeepSeekLlmClient(DeepSeekOptions options)
     {
-        _options = options.Value;
+        _options = options;
     }
 
     public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
@@ -77,7 +78,7 @@ public class DeepSeekLlmClient : ILlmClient
         if (!httpResponse.IsSuccessStatusCode)
         {
             var errorContent = await httpResponse.Content.ReadAsStringAsync();
-            throw new HttpRequestException($"DeepSeek API request failed with status {httpResponse.StatusCode}: {errorContent}");
+            HttpErrorHandler.ThrowAppropriateException((int)httpResponse.StatusCode, errorContent, "DeepSeek");
         }
 
         // retrieve the content deserialize the content

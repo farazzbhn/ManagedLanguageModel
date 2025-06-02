@@ -12,13 +12,13 @@ namespace ManagedLib.LanguageModel.Implementations.Clients.Groq
         /// - scoped <see cref="GroqLlmClient"/>
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        public static IServiceCollection AddGroq(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddGroq(this IServiceCollection services, GroqOptions options)
         {
             services.AddScoped<ILlmClient, GroqLlmClient>();
             services.AddScoped<GroqLlmClient>();
-            services.Configure<GroqOptions>(configuration.GetSection(nameof(GroqOptions)));
+            services.AddSingleton(options);
             return services;
         }
 

@@ -13,13 +13,13 @@ namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI
         /// - scoped <see cref="OpenAILlmClient"/>
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        public static IServiceCollection AddOpenAI(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddOpenAI(this IServiceCollection services, OpenAIOptions options)
         {
             services.AddScoped<ILlmClient, OpenAILlmClient>();
             services.AddScoped<OpenAILlmClient>();
-            services.Configure<OpenAIOptions>(configuration.GetSection(nameof(OpenAIOptions)));
+            services.AddSingleton<OpenAIOptions>(options);
             return services;
         }
 

@@ -2,16 +2,17 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ManagedLib.LanguageModel.Abstractions;
-using Microsoft.Extensions.Options;
+using ManagedLib.LanguageModel.Exceptions;
+using ManagedLib.LanguageModel.Utilities;
 
 namespace ManagedLib.LanguageModel.Implementations.Clients.OpenAI;
 public class OpenAILlmClient : ILlmClient
 {
     private readonly OpenAIOptions _options;
 
-    public OpenAILlmClient(IOptions<OpenAIOptions> options)
+    public OpenAILlmClient(OpenAIOptions options)
     {
-        _options = options.Value;
+        _options = options;
     }
 
     public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
@@ -82,7 +83,7 @@ public class OpenAILlmClient : ILlmClient
         if (!httpResponse.IsSuccessStatusCode)
         {
             var errorContent = await httpResponse.Content.ReadAsStringAsync();
-            throw new HttpRequestException($"OpenAI API request failed with status {httpResponse.StatusCode}: {errorContent}");
+            HttpErrorHandler.ThrowAppropriateException((int)httpResponse.StatusCode, errorContent, "OpenAI");
         }
 
         // retrieve the content deserialize the content

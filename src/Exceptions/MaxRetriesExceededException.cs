@@ -3,7 +3,7 @@
     public class MaxRetriesExceededException : Exception
     {
         public MaxRetriesExceededException()
-            : base("The maximum number of retries exceeded")
+            : base("The maximum number of attempts exceeded")
         {
         }
 

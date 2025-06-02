@@ -2,15 +2,16 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using ManagedLib.LanguageModel.Abstractions;
+using ManagedLib.LanguageModel.Utilities;
 using Microsoft.Extensions.Options;
 
 namespace ManagedLib.LanguageModel.Implementations.Clients.Groq;
 public class GroqLlmClient : ILlmClient
 {
     private readonly GroqOptions _options;
-    public GroqLlmClient(IOptions<GroqOptions> options)
+    public GroqLlmClient(GroqOptions options)
     {
-        _options = options.Value;
+        _options = options;
     }
 
     public async Task<LlmTransaction> InvokeAsync(string systemPrompt, IEnumerable<Message> history)
@@ -79,7 +80,7 @@ public class GroqLlmClient : ILlmClient
         if (!httpResponse.IsSuccessStatusCode)
         {
             var errorContent = await httpResponse.Content.ReadAsStringAsync();
-            throw new HttpRequestException($"Groq API request failed with status {httpResponse.StatusCode}: {errorContent}");
+            HttpErrorHandler.ThrowAppropriateException((int)httpResponse.StatusCode, errorContent, "Groq");
         }
 
         // retrieve the content deserialize the content

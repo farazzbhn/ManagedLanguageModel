@@ -1,4 +1,6 @@
-﻿namespace ManagedLib.LanguageModel.Abstractions;
+﻿using ManagedLib.LanguageModel.Utilities;
+
+namespace ManagedLib.LanguageModel.Abstractions;
 /// <summary>
 /// Defines the contract for interacting with a language model (LLM).
 /// </summary>
@@ -6,7 +8,8 @@
 public interface ILlmClient
 {
     /// <summary>
-    /// Invokes the language model with a given prompt and message history, and returns the transaction result.
+    /// Invokes the language model with a given prompt and message history, and returns the transaction result. <br />
+    /// Expected to throw an exception using <see cref="HttpErrorHandler"/> on unsuccessful http errors
     /// </summary>
     /// <param name="systemPrompt">The input prompt to send to the language model for processing.</param>
     /// <param name="history">A collection of previous messages that provide context for the current prompt.</param>

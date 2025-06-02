@@ -13,13 +13,13 @@ namespace ManagedLib.LanguageModel.Implementations.Clients.DeepSeek
         /// - scoped <see cref="DeepSeekLlmClient"/>
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        public static IServiceCollection AddDeepSeek(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddDeepSeek(this IServiceCollection services, DeepSeekOptions options)
         {
             services.AddScoped<ILlmClient, DeepSeekLlmClient>();
             services.AddScoped<DeepSeekLlmClient>();
-            services.Configure<DeepSeekOptions>(configuration.GetSection(nameof(DeepSeekOptions)));
+            services.AddSingleton(options);
             return services;
         }
 
