@@ -1,0 +1,42 @@
+name: Public NuGet Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write  # Needed for GitHub Packages
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper versioning
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          source-url: https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Restore dependencies
+        run: dotnet restore ManagedLib.LanguageModel.csproj
+        
+      - name: Build
+        run: dotnet build ManagedLib.LanguageModel.csproj --configuration Release --no-restore
+        
+      - name: Pack
+        run: dotnet pack ManagedLib.LanguageModel.csproj --configuration Release --no-build --output nupkgs
+        
+      - name: Publish to GitHub Packages
+        run: dotnet nuget push "nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_PUBLISH_KEY }} --source https://api.nuget.org/v3/index.json 
